@@ -1,10 +1,29 @@
 #!/bin/bash
 
-package=('git' 'http://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm' 'ntp' 'puppet' 'http://yum.theforeman.org/releases/latest/el7/x86_64/foreman-release.rpm' 'http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm')
+if [[ `facter osfamily` == 'Debian' ]]; then
+  package=('git' 'ntp' 'puppet')
+  debs=('http://apt.puppetlabs.com/puppetlabs-release-trusty.deb')
+  echo "deb http://deb.theforeman.org/ trusty stable" >> /etc/apt/sources.list.d/foreman.list
+  echo "deb http://deb.theforeman.org/ plugins stable" >> /etc/apt/sources.list/foreman.list
 
-for i in ${package[@]}; do
+  apt-get update
+
+  for i in ${package[@]}; do
+    apt-get -y install $i
+  done
+
+  for i in ${debs[@]}; do
+    wget $i
+    deb_package=`echo $i | awk -F / '{print $NF}'`
+    dpkg -i $deb_package
+  done
+else
+  package=('git' 'http://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm' 'ntp' 'puppet' 'http://yum.theforeman.org/releases/latest/el7/x86_64/foreman-release.rpm' 'http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm')
+  for i in ${package[@]}; do
     yum -y install $i
-done
+  done
+fi
+
 
 service ntpd stop
 ntpdate time.apple.com
