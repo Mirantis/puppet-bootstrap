@@ -5,6 +5,15 @@ if [[ `facter osfamily` == 'Debian' ]]; then
   debs=('http://apt.puppetlabs.com/puppetlabs-release-trusty.deb')
   echo "deb http://deb.theforeman.org/ trusty stable" >> /etc/apt/sources.list.d/foreman.list
   echo "deb http://deb.theforeman.org/ plugins stable" >> /etc/apt/sources.list/foreman.list
+  wget -q http://deb.theforeman.org/pubkey.gpg -O- | apt-key add -
+
+  apt-get update
+
+  for i in ${debs[@]}; do
+    wget $i
+    deb_package=`echo $i | awk -F / '{print $NF}'`
+    dpkg -i $deb_package
+  done
 
   apt-get update
 
@@ -12,11 +21,6 @@ if [[ `facter osfamily` == 'Debian' ]]; then
     apt-get -y install $i
   done
 
-  for i in ${debs[@]}; do
-    wget $i
-    deb_package=`echo $i | awk -F / '{print $NF}'`
-    dpkg -i $deb_package
-  done
 else
   package=('git' 'http://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm' 'ntp' 'puppet' 'http://yum.theforeman.org/releases/latest/el7/x86_64/foreman-release.rpm' 'http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm')
   for i in ${package[@]}; do
