@@ -4,7 +4,7 @@ if [[ `facter osfamily` == 'Debian' ]]; then
   package=('git' 'ntp' 'puppet')
   debs=('http://apt.puppetlabs.com/puppetlabs-release-trusty.deb')
   echo "deb http://deb.theforeman.org/ trusty stable" >> /etc/apt/sources.list.d/foreman.list
-  echo "deb http://deb.theforeman.org/ plugins stable" >> /etc/apt/sources.list/foreman.list
+  echo "deb http://deb.theforeman.org/ plugins stable" >> /etc/apt/sources.list.d/foreman.list
   wget -q http://deb.theforeman.org/pubkey.gpg -O- | apt-key add -
 
   apt-get update
