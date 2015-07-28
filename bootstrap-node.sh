@@ -44,4 +44,5 @@ echo '### This file is managed by Puppet ###
 extension_requests:
   [Your OID here]: "[Your key here]"' > /etc/puppet/csr_attributes.yaml
 
+rm -rf /var/lib/puppet/ssl
 puppet agent -t --server [your puppet master] --ca_server [your CA server]
