@@ -10,9 +10,9 @@ if [[ -z $SIZE || -z $VOLGROUP || -z $CPU || -z $RAM ]]; then
   exit 1
 fi
 
-lvcreate --name foreman --size ${SIZE}G VMstorage
-lvcreate --name puppetdb --size ${SIZE}G VMstorage
-lvcreate --name puppet --size ${SIZE}G VMstorage
+lvcreate --name foreman --size ${SIZE}G ${VOLGROUP}
+lvcreate --name puppetdb --size ${SIZE}G ${VOLGROUP}
+lvcreate --name puppet --size ${SIZE}G ${VOLGROUP}
 
 # Create foreman server
 for i in foreman puppetdb puppet
