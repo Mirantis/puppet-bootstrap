@@ -2,6 +2,7 @@
 
 if [[ `facter osfamily` == 'Debian' ]]; then
   package=('git' 'ntp' 'puppet')
+  ntp_service='ntp'
   debs=('http://apt.puppetlabs.com/puppetlabs-release-trusty.deb')
   echo "deb http://deb.theforeman.org/ trusty stable" >> /etc/apt/sources.list.d/foreman.list
   echo "deb http://deb.theforeman.org/ plugins stable" >> /etc/apt/sources.list.d/foreman.list
@@ -22,6 +23,7 @@ if [[ `facter osfamily` == 'Debian' ]]; then
   done
 
 else
+  ntp_service='ntpd'
   package=('git' 'http://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm' 'ntp' 'puppet' 'http://yum.theforeman.org/releases/latest/el7/x86_64/foreman-release.rpm' 'http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm')
   for i in ${package[@]}; do
     yum -y install $i
@@ -29,9 +31,9 @@ else
 fi
 
 
-service ntpd stop
-ntpdate time.apple.com
-service ntpd start
+service $ntp_service stop
+ntpdate 0.us.pool.ntp.org
+service $ntp_service start
 
 # The following sets up autosigning of the puppet cert
 # The OID and key listed here need to be in /etc/puppet/csr_attributes.yaml
